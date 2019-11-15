@@ -11,8 +11,12 @@ def main():
     model_entry = Entry(window, textvariable=model_text)
     model_entry.grid(row=0, column=1)
 
+    marcas = {"Samsung", "LG", "Xiaomi", "Huawei"}
     marca_label = Label(window, text='Marca', font=('bold', 14), pady=20, padx=20)
     marca_label.grid(row=0, column=2)
+    marca_text = StringVar()
+    marca_option = OptionMenu(window, marca_text, *marcas, )
+    marca_option.grid(row=0, column=3)
 
     window.mainloop()
 
