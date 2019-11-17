@@ -17,5 +17,6 @@ def buscarAmazon(movil):
     #WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "celwidget slot=SEARCH_RESULTS template=SEARCH_RESULTS widgetId=search-results index=2")))
     listaElementos = navegador.find_elements_by_xpath("/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div[3]")
     print(len(listaElementos))
+    print("a")
 
 buscarAmazon("Samsung Galaxy S10")
