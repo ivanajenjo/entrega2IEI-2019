@@ -1,4 +1,4 @@
-#!C:\Users\ivana\PycharmProjects\Entrega2IEI\venv\Scripts\python.exe
+#!D:\WorkSpace\entrega2IEI-2019\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'pip==19.0.3','console_scripts','pip'
 __requires__ = 'pip==19.0.3'
 import re

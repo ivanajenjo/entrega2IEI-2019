@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\ivana\PycharmProjects\Entrega2IEI\venv"
+VIRTUAL_ENV="D:\WorkSpace\entrega2IEI-2019\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
