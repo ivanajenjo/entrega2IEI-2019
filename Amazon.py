@@ -1,4 +1,5 @@
 from selenium import webdriver
+import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -12,14 +13,9 @@ def buscarAmazon(movil):
     elem = navegador.find_element_by_id("twotabsearchtextbox")
     elem.send_keys(movil)
     elem.submit()
-    delay = 3
-    try:
-        elem = WebDriverWait(navegador, delay).until(EC.presence_of_element_located((By.CLASS_NAME, 'a-size-medium a-color-base a-text-normal')))
-        print("Page is ready!")
-    except TimeoutException:
-        print("Loading took too much time!")
-    elem = navegador.find_element_by_class_name("a-size-medium a-color-base a-text-normal")
-    print(elem.text)
-    navegador.close()
+    time.sleep(5)
+    #WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "celwidget slot=SEARCH_RESULTS template=SEARCH_RESULTS widgetId=search-results index=2")))
+    listaElementos = navegador.find_elements_by_xpath("/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div[3]")
+    print(len(listaElementos))
 
 buscarAmazon("Samsung Galaxy S10")
