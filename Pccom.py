@@ -25,6 +25,7 @@ def buscarPccom(marca, movil):
     listaElementos = navegador.find_elements_by_xpath ( "//*[contains(@class, 'tarjeta-articulo expandible')]" )
     print(len(listaElementos))
     j = 1
+    resultado = list()
     for i in listaElementos:
         elementoActual = i
         nombre = elementoActual.find_element_by_xpath(
@@ -32,6 +33,8 @@ def buscarPccom(marca, movil):
         print(nombre.text)
         precio = elementoActual.find_element_by_xpath("/html/body/div[1]/div[2]/div/div/div[2]/div[2]/div[3]/div/div["+str(j)+"]/article/div[1]/div[2]/div")
         print(precio.text)
+        resultado.append((nombre.text + " " + precio.text))
         j = j + 1
+    print(resultado)
 
 buscarPccom("Samsung" ,"Galaxy S10")

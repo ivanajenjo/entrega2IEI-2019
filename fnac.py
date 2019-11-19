@@ -29,6 +29,7 @@ def buscarFnac(marca, movil):
     listaElementos = navegador.find_elements_by_xpath("//*[contains(@class, 'Article-itemGroup')]")
     print(len(listaElementos))
     j = 1
+    resultado = list()
     for i in listaElementos:
         elementoActual = i
         nombre = elementoActual.find_element_by_xpath("/html/body/div[3]/div/div[7]/div/div["+str(j)+"]/article/div[2]/div/p[1]")
@@ -38,7 +39,9 @@ def buscarFnac(marca, movil):
         except:
             precio = elementoActual.find_element_by_xpath("/html/body/div[3]/div/div[7]/div/div["+str(j)+"]/article/div[3]/div/div/div/div/div[1]/a/strong")
         print(precio.text)
+        resultado.append((nombre.text + " " + precio.text))
         j = j+1
+    print(resultado)
 
 
 buscarFnac("Samsung", "Galaxy s10")

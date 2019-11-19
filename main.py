@@ -34,8 +34,17 @@ def main():
     buscar = Button(text="Buscar")
     buscar.grid(row=2, column=2)
 
+    items=["Samsung Galaxy S10+",
+           "Xiaomi mi 9t",
+           "Apple iPhone 11 pro max"]
+
+    lista = Listbox(width=70, height=15)
+    lista.grid(row=4, columnspan=4)
+    lista.insert(0,*items)
+
     window.mainloop()
 
 
 if __name__ == "__main__":
     main()
+    #Amazon.buscarAmazon("Xiaomi mi9T")
