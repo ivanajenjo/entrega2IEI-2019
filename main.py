@@ -1,4 +1,6 @@
 from tkinter import *
+from fnac import buscarFnac
+
 
 def main():
     window = Tk()
@@ -31,7 +33,7 @@ def main():
     chk_pccom = Checkbutton(window, text='Pccomponentes', var=chk_pccom_state)
     chk_pccom.grid(row=3, column=0, sticky=W)
 
-    buscar = Button(text="Buscar")
+    buscar = Button(text="Buscar", command=buscarFnac(str(marca_text), str(model_text)))
     buscar.grid(row=2, column=2)
 
     items=["Samsung Galaxy S10+",
@@ -44,7 +46,5 @@ def main():
 
     window.mainloop()
 
-
 if __name__ == "__main__":
     main()
-    #Amazon.buscarAmazon("Xiaomi mi9T")

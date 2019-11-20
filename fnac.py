@@ -42,7 +42,9 @@ def buscarFnac(marca, movil):
         resultado.append((nombre.text + " " + precio.text))
         j = j+1
     print(resultado)
+    return resultado
 
+if __name__ == '__main__':
+    buscarFnac()
 
-buscarFnac("Samsung", "Galaxy s10")
 
