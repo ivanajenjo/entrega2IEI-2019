@@ -36,5 +36,6 @@ def buscarPccom(marca, movil):
         resultado.append((nombre.text + " " + precio.text))
         j = j + 1
     print(resultado)
+    navegador.close()
 
 buscarPccom("Samsung" ,"Galaxy S10")
