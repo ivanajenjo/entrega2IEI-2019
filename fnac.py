@@ -45,6 +45,6 @@ def buscarFnac(marca, movil):
     return resultado
 
 if __name__ == '__main__':
-    buscarFnac()
+    buscarFnac("Samsung", "Galaxy S10")
 
 

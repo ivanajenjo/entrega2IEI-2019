@@ -1,5 +1,10 @@
+from functools import partial
 from tkinter import *
-from fnac import buscarFnac
+
+
+def buscarFromFnac(marca, movil):
+    import fnac
+    fnac.buscarFnac(str(marca), str(movil))
 
 
 def main():
@@ -33,7 +38,7 @@ def main():
     chk_pccom = Checkbutton(window, text='Pccomponentes', var=chk_pccom_state)
     chk_pccom.grid(row=3, column=0, sticky=W)
 
-    buscar = Button(text="Buscar", command=buscarFnac(str(marca_text), str(model_text)))
+    buscar = Button(text="Buscar", command=partial(buscarFromFnac, marca_text.get(), model_text.get()))
     buscar.grid(row=2, column=2)
 
     items=["Samsung Galaxy S10+",
