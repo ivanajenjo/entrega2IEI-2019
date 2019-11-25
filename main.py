@@ -6,42 +6,67 @@ def buscarFnac(marca, movil):
     from selenium.webdriver.support.wait import WebDriverWait
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support import expected_conditions as EC
+    import time
     busqueda = marca + " " + movil
     navegador = webdriver.Chrome("driver/chromedriver.exe")
     navegador.get("https://www.fnac.es")
     navegador.maximize_window()
     ventanacookies = navegador.find_element_by_xpath("/html/body/aside/div/button")
-    if ventanacookies != None :
+    if ventanacookies != None:
         print("Detectado caja de cookies")
         ventanacookies.click()
     cajabusqueda = navegador.find_element_by_id("Fnac_Search")
     cajabusqueda.send_keys(busqueda)
     cajabusqueda.submit()
-    element = navegador.find_element_by_css_selector('#col_gauche > div > div.nav > div.content > ul > li:nth-child(1) > ul > li:nth-child(1) > span')
+    try:
+        element = navegador.find_element_by_css_selector(
+            '#col_gauche > div > div.nav > div.content > ul > li:nth-child(1) > ul > li:nth-child(1) > span')
+        if element != None:
+            element.click()
+            print("Pulsado sobre Telefonos")
+    except:
+        print("Teléfono no disponible")
+        resultado=list()
+        resultado.append("Teléfono no disponible en FNAC")
+        return (resultado)
+    elem = WebDriverWait(navegador, 10).until(
+        EC.presence_of_element_located((By.XPATH, '/html/body/div[3]/div/div[1]/div/div/ul/li[7]/span')))
+    try:
+        element = navegador.find_element_by_css_selector(
+            '#col_gauche > div > div.sticky > div.Filters.js-SearchFilters > div.js-FiltersContainer.js-FiltersContainer--vendor > div > a.Filters-choice.js-Filters-choice.js-Filters-choice--vendor-fnacdarty.isActive > label > span.Filters-choiceLabel')
+    except:
+        print("No existe vendedor fnac")
+    time.sleep(5)
     if element != None:
-        element.click()
-        print("Pulsado sobre Telefonos")
-    elem = WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[3]/div/div[1]/div/div/ul/li[7]/span')))
-    element = navegador.find_element_by_css_selector('#col_gauche > div > div.sticky > div.Filters.js-SearchFilters > div.js-FiltersContainer.js-FiltersContainer--vendor > div > a.Filters-choice.js-Filters-choice.js-Filters-choice--vendor-fnacdarty.isActive > label > span.Filters-choiceLabel')
-    if element != None:
-        element.click()
+        try:
+            element.click()
+        except:
+            print("")
         print("Pulsado Vendedor Fnac")
-    elem = WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[1]/div/div[2]/div[2]/div[2]/span/ul/li/a')))
+    try:
+        elem = WebDriverWait(navegador, 5).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '/html/body/div[2]/div[1]/div/div[2]/div[2]/div[2]/span/ul/li/a')))
+    except:
+        print("No se ha encontrado elemento")
     listaElementos = navegador.find_elements_by_xpath("//*[contains(@class, 'Article-itemGroup')]")
     print(len(listaElementos))
     j = 1
     resultado = list()
     for i in listaElementos:
         elementoActual = i
-        nombre = elementoActual.find_element_by_xpath("/html/body/div[3]/div/div[7]/div/div["+str(j)+"]/article/div[2]/div/p[1]")
+        nombre = elementoActual.find_element_by_xpath(
+            "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[2]/div/p[1]")
         print(nombre.text)
         try:
-            precio = elementoActual.find_element_by_xpath("/html/body/div[3]/div/div[7]/div/div["+str(j)+"]/article/div[3]/div/div/div/div/div[3]/span[2]")
+            precio = elementoActual.find_element_by_xpath(
+                "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div/div[3]/span[2]")
         except:
-            precio = elementoActual.find_element_by_xpath("/html/body/div[3]/div/div[7]/div/div["+str(j)+"]/article/div[3]/div/div/div/div/div[1]/a/strong")
+            precio = elementoActual.find_element_by_xpath(
+                "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div[1]/a/strong")
         print(precio.text)
         resultado.append((nombre.text + " " + precio.text + " Fnac"))
-        j = j+1
+        j = j + 1
     print(resultado)
     navegador.close()
     return resultado
@@ -64,7 +89,11 @@ def buscarPccom(marca, movil):
     elem = navegador.find_element_by_name("query")
     elem.send_keys(busqueda)
     elem.send_keys(Keys.RETURN)
-    element = navegador.find_element_by_css_selector('#acc-fil-538 > div > ul > li:nth-child(1) > a')
+    try:
+        element = navegador.find_element_by_css_selector('#acc-fil-538 > div > ul > li:nth-child(1) > a')
+    except:
+        print("Telefono no disponible")
+        return "Telefono no disponible"
     if element != None:
         element.click()
         print("Pulsado sobre Telefonos")
@@ -92,11 +121,12 @@ def buscarPccom(marca, movil):
 def buscarAmazon(marca, movil):
     from selenium import webdriver
     import time
+    busqueda = marca + " " + movil
     navegador = webdriver.Chrome("driver/chromedriver.exe")
     navegador.maximize_window()
     navegador.get("https://www.amazon.es/gp/browse.html?node=931491031&ref_=nav_em_T1_0_4_12_2__tele")
     elem = navegador.find_element_by_id("twotabsearchtextbox")
-    elem.send_keys(movil)
+    elem.send_keys(busqueda)
     elem.submit()
     time.sleep(5)
     #WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "celwidget slot=SEARCH_RESULTS template=SEARCH_RESULTS widgetId=search-results index=2")))
@@ -118,23 +148,36 @@ def buscarAmazon(marca, movil):
             precio = elementoActual.find_element_by_xpath(
                 """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["""+str(j)+"""]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
         except:
-            precio = elementoActual.find_element_by_xpath(
-                """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["""+str(j)+"""]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
+            break
         print(precio.text)
         resultado.append((nombre.text + " " + precio.text + " Amazon"))
         j = j + 1
     print(resultado)
+    navegador.close()
     return resultado
 
 def botonBuscar(marca, movil):
     print(chk_pccom_state.get())
     print(chk_fnac_state.get())
+    print(chk_amazon_state.get())
     if chk_fnac_state.get():
         fnac = buscarFnac(str(marca), str(movil))
     if chk_pccom_state.get():
         pccom = buscarPccom(str(marca), str(movil))
     if chk_amazon_state.get():
-        amazon = buscarAmazon()
+        amazon = buscarAmazon(str(marca), str(movil))
+    convertir_resultados(fnac, pccom, amazon)
+
+def convertir_resultados(fnac, pccom, amazon):
+    resultado = list()
+    for i in fnac:
+        resultado.append(i)
+    for i in pccom:
+        resultado.append(i)
+    for i in amazon:
+        resultado.append(i)
+    lista.insert(0, *resultado)
+    print("resultado")
 
 
 window = Tk()
@@ -170,12 +213,9 @@ chk_pccom.grid(row=3, column=0, sticky=W)
 buscar = Button(text="Buscar", command=lambda: botonBuscar(marca_text.get(), model_text.get()))
 buscar.grid(row=2, column=2)
 
-items=["Samsung Galaxy S10+",
-           "Xiaomi mi 9t",
-           "Apple iPhone 11 pro max"]
-
 lista = Listbox(width=70, height=15)
 lista.grid(row=4, columnspan=4)
-lista.insert(0,*items)
+scrollbar = Scrollbar(lista, orient="vertical")
+lista.config(yscrollcommand=scrollbar.set)
 
 window.mainloop()
