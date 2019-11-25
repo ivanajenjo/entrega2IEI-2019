@@ -1,5 +1,5 @@
-from functools import partial
 from tkinter import *
+
 
 def buscarFnac(marca, movil):
     from selenium import webdriver
@@ -40,7 +40,7 @@ def buscarFnac(marca, movil):
         except:
             precio = elementoActual.find_element_by_xpath("/html/body/div[3]/div/div[7]/div/div["+str(j)+"]/article/div[3]/div/div/div/div/div[1]/a/strong")
         print(precio.text)
-        resultado.append((nombre.text + " " + precio.text))
+        resultado.append((nombre.text + " " + precio.text + " Fnac"))
         j = j+1
     print(resultado)
     navegador.close()
@@ -53,6 +53,7 @@ def buscarPccom(marca, movil):
     from selenium.webdriver.support import expected_conditions as EC
     from selenium.webdriver.common.keys import Keys
     import time
+    busqueda = marca + " " + movil
     navegador = webdriver.Chrome("driver/chromedriver.exe")
     navegador.get("https://www.pccomponentes.com")
     navegador.maximize_window()
@@ -61,7 +62,7 @@ def buscarPccom(marca, movil):
         print("Detectado caja de cookies")
         ventanacookies.click()
     elem = navegador.find_element_by_name("query")
-    elem.send_keys(movil)
+    elem.send_keys(busqueda)
     elem.send_keys(Keys.RETURN)
     element = navegador.find_element_by_css_selector('#acc-fil-538 > div > ul > li:nth-child(1) > a')
     if element != None:
@@ -82,18 +83,58 @@ def buscarPccom(marca, movil):
         precio = elementoActual.find_element_by_xpath(
             "/html/body/div[1]/div[2]/div/div/div[2]/div[2]/div[3]/div/div[" + str(j) + "]/article/div[1]/div[2]/div")
         print(precio.text)
-        resultado.append((nombre.text + " " + precio.text))
+        resultado.append((nombre.text + " " + precio.text + " Pccomponentes"))
         j = j + 1
     print(resultado)
     navegador.close()
+    return resultado
+
+def buscarAmazon(marca, movil):
+    from selenium import webdriver
+    import time
+    navegador = webdriver.Chrome("driver/chromedriver.exe")
+    navegador.maximize_window()
+    navegador.get("https://www.amazon.es/gp/browse.html?node=931491031&ref_=nav_em_T1_0_4_12_2__tele")
+    elem = navegador.find_element_by_id("twotabsearchtextbox")
+    elem.send_keys(movil)
+    elem.submit()
+    time.sleep(5)
+    #WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "celwidget slot=SEARCH_RESULTS template=SEARCH_RESULTS widgetId=search-results index=2")))
+    listaElementos = navegador.find_elements_by_xpath("//*[contains(@class, 'sg-col-20-of-24 s-result-item sg-col-0-of-12 sg-col-28-of-32 sg-col-16-of-20 sg-col sg-col-32-of-36 sg-col-12-of-16 sg-col-24-of-28')]")
+    print(len(listaElementos))
+    j = 3
+    resultado = list()
+    for i in listaElementos:
+        elementoActual = i
+        try:
+            nombre = elementoActual.find_element_by_xpath(
+                "/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["+str(j)+"]/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span")
+            print(nombre.text)
+        except:
+            print("No se ha encontrado nombre")
+            break
+        #print(nombre.text)
+        try:
+            precio = elementoActual.find_element_by_xpath(
+                """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["""+str(j)+"""]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
+        except:
+            precio = elementoActual.find_element_by_xpath(
+                """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["""+str(j)+"""]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
+        print(precio.text)
+        resultado.append((nombre.text + " " + precio.text + " Amazon"))
+        j = j + 1
+    print(resultado)
+    return resultado
 
 def botonBuscar(marca, movil):
     print(chk_pccom_state.get())
     print(chk_fnac_state.get())
     if chk_fnac_state.get():
-        buscarFnac(str(marca), str(movil))
+        fnac = buscarFnac(str(marca), str(movil))
     if chk_pccom_state.get():
-        buscarPccom(str(marca), str(movil))
+        pccom = buscarPccom(str(marca), str(movil))
+    if chk_amazon_state.get():
+        amazon = buscarAmazon()
 
 
 window = Tk()
