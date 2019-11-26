@@ -1,6 +1,5 @@
 from tkinter import *
 
-
 def buscarFnac(marca, movil):
     from selenium import webdriver
     from selenium.webdriver.support.wait import WebDriverWait
@@ -63,9 +62,9 @@ def buscarFnac(marca, movil):
                 "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div/div[3]/span[2]")
         except:
             precio = elementoActual.find_element_by_xpath(
-                "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div[1]/a/strong")
+                "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div/div[1]/a/strong")
         print(precio.text)
-        resultado.append((nombre.text + " " + precio.text + " Fnac"))
+        resultado.append((nombre.text + ", " + precio.text + ", Fnac"))
         j = j + 1
     print(resultado)
     navegador.close()
@@ -112,7 +111,7 @@ def buscarPccom(marca, movil):
         precio = elementoActual.find_element_by_xpath(
             "/html/body/div[1]/div[2]/div/div/div[2]/div[2]/div[3]/div/div[" + str(j) + "]/article/div[1]/div[2]/div")
         print(precio.text)
-        resultado.append((nombre.text + " " + precio.text + " Pccomponentes"))
+        resultado.append((nombre.text + ", " + precio.text + ", Pccomponentes"))
         j = j + 1
     print(resultado)
     navegador.close()
@@ -150,16 +149,20 @@ def buscarAmazon(marca, movil):
         except:
             break
         print(precio.text)
-        resultado.append((nombre.text + " " + precio.text + " Amazon"))
+        resultado.append((nombre.text + ", " + precio.text + ", Amazon"))
         j = j + 1
     print(resultado)
     navegador.close()
     return resultado
 
 def botonBuscar(marca, movil):
+    lista.delete(0,'end')
     print(chk_pccom_state.get())
     print(chk_fnac_state.get())
     print(chk_amazon_state.get())
+    fnac = {}
+    amazon = {}
+    pccom = {}
     if chk_fnac_state.get():
         fnac = buscarFnac(str(marca), str(movil))
     if chk_pccom_state.get():
@@ -170,12 +173,19 @@ def botonBuscar(marca, movil):
 
 def convertir_resultados(fnac, pccom, amazon):
     resultado = list()
-    for i in fnac:
-        resultado.append(i)
-    for i in pccom:
-        resultado.append(i)
-    for i in amazon:
-        resultado.append(i)
+    if chk_fnac_state:
+        for i in fnac:
+            aux = i.split(', ')
+            nombreproducto = aux[0]
+            precio = aux[1]
+            print(aux)
+            resultado.append(i)
+    if chk_pccom_state:
+        for i in pccom:
+            resultado.append(i)
+    if chk_amazon_state:
+        for i in amazon:
+            resultado.append(i)
     lista.insert(0, *resultado)
     print("resultado")
 
