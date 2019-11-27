@@ -53,6 +53,7 @@ def buscarFnac(marca, movil):
     j = 1
     resultado = list()
     for i in listaElementos:
+        precio = None
         elementoActual = i
         nombre = elementoActual.find_element_by_xpath(
             "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[2]/div/p[1]")
@@ -61,10 +62,23 @@ def buscarFnac(marca, movil):
             precio = elementoActual.find_element_by_xpath(
                 "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div/div[3]/span[2]")
         except:
-            precio = elementoActual.find_element_by_xpath(
+            try:
+                precio = elementoActual.find_element_by_xpath(
                 "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div/div[1]/a")
-        print(precio.text)
-        resultado.append((nombre.text + ", " + precio.text + ", Fnac"))
+            except:
+                print("No disponible")
+        #print(precio.text)
+        try:
+            descuento = elementoActual.find_element_by_xpath("/html/body/div[3]/div/div[7]/div/div["+str(j)+"]/article/div[3]/div/div/div/div/div[1]/span")
+        except:
+            descuento = None
+        if precio != None:
+            if descuento != None:
+                resultado.append((nombre.text + "; " + precio.text + "; Descuento: "+ descuento.text +"; Fnac"))
+            else:
+                resultado.append((nombre.text + "; " + precio.text + "; Fnac"))
+        else:
+            resultado.append((nombre.text + "; No disponible; Fnac"))
         j = j + 1
     print(resultado)
     navegador.close()
@@ -119,9 +133,9 @@ def buscarPccom(marca, movil):
         except:
             descuento = None
         if descuento != None:
-            resultado.append((nombre.text + ", " + precio.text + " Descuento: "+ descuento.text +", Pccomponentes"))
+            resultado.append((nombre.text + "; " + precio.text + "; Descuento: "+ descuento.text +"; Pccomponentes"))
         else:
-            resultado.append((nombre.text + ", " + precio.text + ", Pccomponentes"))
+            resultado.append((nombre.text + "; " + precio.text + "; ; Pccomponentes"))
         j = j + 1
     print(resultado)
     navegador.close()
@@ -178,9 +192,9 @@ def buscarAmazon(marca, movil):
             print("No descuento")
         print(precio.text)
         if descuento != None:
-            resultado.append((nombre.text + ", " + precio.text +" Descuento: " + descuento.text+ ", Amazon"))
+            resultado.append((nombre.text + "; " + precio.text + "; Descuento: " + descuento.text+ "; Amazon"))
         else:
-            resultado.append((nombre.text + ", " + precio.text + ", Amazon"))
+            resultado.append((nombre.text + "; " + precio.text + "; Amazon"))
         j = j + 1
     print(resultado)
     navegador.close()
@@ -202,24 +216,28 @@ def botonBuscar(marca, movil):
         amazon = buscarAmazon(str(marca), str(movil))
     convertir_resultados(fnac, pccom, amazon)
 
+def convertirACsv(lista):
+    import csv
+
+    with open("csv.csv", 'w') as myfile:
+        wr = csv.writer(myfile, quoting=csv.QUOTE_MINIMAL, delimiter= ";")
+        for i in lista:
+            wr.writerow(i)
+    print("escrito en csv")
+
 def convertir_resultados(fnac, pccom, amazon):
     resultado = list()
     if chk_fnac_state:
         for i in fnac:
-            aux = i.split(', ')
-            nombreproducto = aux[0]
-            precio = aux[1]
-            print(aux)
             resultado.append(i)
     if chk_pccom_state:
         for i in pccom:
             resultado.append(i)
     if chk_amazon_state:
         for i in amazon:
-            print(i)
             resultado.append(i)
     lista.insert(0, *resultado)
-
+    convertirACsv(resultado)
 
 window = Tk()
 window.title("Entrega 2 IEI")
