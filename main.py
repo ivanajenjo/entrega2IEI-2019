@@ -76,9 +76,9 @@ def buscarFnac(marca, movil):
             if descuento != None:
                 resultado.append((nombre.text + "; " + precio.text + "; Descuento: "+ descuento.text +"; Fnac"))
             else:
-                resultado.append((nombre.text + "; " + precio.text + "; Fnac"))
+                resultado.append((nombre.text + "; " + precio.text + "; ;Fnac"))
         else:
-            resultado.append((nombre.text + "; No disponible; Fnac"))
+            resultado.append((nombre.text + "; No disponible; ;Fnac"))
         j = j + 1
     print(resultado)
     navegador.close()
@@ -194,7 +194,7 @@ def buscarAmazon(marca, movil):
         if descuento != None:
             resultado.append((nombre.text + "; " + precio.text + "; Descuento: " + descuento.text+ "; Amazon"))
         else:
-            resultado.append((nombre.text + "; " + precio.text + "; Amazon"))
+            resultado.append((nombre.text + "; " + precio.text + "; ; Amazon"))
         j = j + 1
     print(resultado)
     navegador.close()
@@ -219,10 +219,11 @@ def botonBuscar(marca, movil):
 def convertirACsv(lista):
     import csv
 
-    with open("csv.csv", 'w') as myfile:
+    with open("csv.csv", 'w', newline='') as myfile:
         wr = csv.writer(myfile, quoting=csv.QUOTE_MINIMAL, delimiter= ";")
         for i in lista:
-            wr.writerow(i)
+            print(i)
+            wr.writerow(i.split(';'))
     print("escrito en csv")
 
 def convertir_resultados(fnac, pccom, amazon):
