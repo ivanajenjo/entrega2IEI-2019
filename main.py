@@ -62,7 +62,7 @@ def buscarFnac(marca, movil):
                 "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div/div[3]/span[2]")
         except:
             precio = elementoActual.find_element_by_xpath(
-                "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div/div[1]/a/strong")
+                "/html/body/div[3]/div/div[7]/div/div[" + str(j) + "]/article/div[3]/div/div/div/div/div[1]/a")
         print(precio.text)
         resultado.append((nombre.text + ", " + precio.text + ", Fnac"))
         j = j + 1
@@ -77,7 +77,7 @@ def buscarPccom(marca, movil):
     from selenium.webdriver.support import expected_conditions as EC
     from selenium.webdriver.common.keys import Keys
     import time
-    busqueda = marca + " " + movil
+    busqueda = "smartphon " + marca + " " + movil
     navegador = webdriver.Chrome("driver/chromedriver.exe")
     navegador.get("https://www.pccomponentes.com")
     navegador.maximize_window()
@@ -94,7 +94,10 @@ def buscarPccom(marca, movil):
         print("Telefono no disponible")
         return "Telefono no disponible"
     if element != None:
-        element.click()
+        try:
+            element.click()
+        except:
+            print("No se ha podido seleccionar telefonos")
         print("Pulsado sobre Telefonos")
     time.sleep(5)
     WebDriverWait(navegador, 10).until(EC.presence_of_element_located(
@@ -111,7 +114,14 @@ def buscarPccom(marca, movil):
         precio = elementoActual.find_element_by_xpath(
             "/html/body/div[1]/div[2]/div/div/div[2]/div[2]/div[3]/div/div[" + str(j) + "]/article/div[1]/div[2]/div")
         print(precio.text)
-        resultado.append((nombre.text + ", " + precio.text + ", Pccomponentes"))
+        try:
+            descuento = elementoActual.find_element_by_xpath("/html/body/div[1]/div[2]/div/div/div[2]/div[2]/div[3]/div/div["+str(j)+"]/article/div[1]/div[2]/div[2]/div[1]/span")
+        except:
+            descuento = None
+        if descuento != None:
+            resultado.append((nombre.text + ", " + precio.text + " Descuento: "+ descuento.text +", Pccomponentes"))
+        else:
+            resultado.append((nombre.text + ", " + precio.text + ", Pccomponentes"))
         j = j + 1
     print(resultado)
     navegador.close()
@@ -128,35 +138,56 @@ def buscarAmazon(marca, movil):
     elem.send_keys(busqueda)
     elem.submit()
     time.sleep(5)
-    #WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "celwidget slot=SEARCH_RESULTS template=SEARCH_RESULTS widgetId=search-results index=2")))
-    listaElementos = navegador.find_elements_by_xpath("//*[contains(@class, 'sg-col-20-of-24 s-result-item sg-col-0-of-12 sg-col-28-of-32 sg-col-16-of-20 sg-col sg-col-32-of-36 sg-col-12-of-16 sg-col-24-of-28')]")
+    # WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "celwidget slot=SEARCH_RESULTS template=SEARCH_RESULTS widgetId=search-results index=2")))
+    listaElementos = navegador.find_elements_by_xpath(
+        "//*[contains(@class, 's-result-item')]")
     print(len(listaElementos))
     j = 3
     resultado = list()
     for i in listaElementos:
+        descuento = None
         elementoActual = i
         try:
             nombre = elementoActual.find_element_by_xpath(
-                "/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["+str(j)+"]/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span")
+                "/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div[" + str(
+                    j) + "]/div/span/div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span")
             print(nombre.text)
         except:
-            print("No se ha encontrado nombre")
-            break
-        #print(nombre.text)
+            try:
+                nombre = elementoActual.find_element_by_xpath(
+                    "/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div[" + str(
+                        j) + "]/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span")
+            except:
+                print("No se ha encontrado nombre")
+                break
+        # print(nombre.text)
         try:
             precio = elementoActual.find_element_by_xpath(
-                """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["""+str(j)+"""]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
+                """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div[""" + str(
+                    j) + """]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
         except:
-            break
+            try:
+                precio = elementoActual.find_element_by_xpath(
+                    """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div[""" + str(
+                        j) + """]/div/span/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
+            except:
+                break
+        try:
+            descuento = elementoActual.find_element_by_xpath("/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["+str(j)+"]/div/span/div/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[2]/span[1]")
+        except:
+            print("No descuento")
         print(precio.text)
-        resultado.append((nombre.text + ", " + precio.text + ", Amazon"))
+        if descuento != None:
+            resultado.append((nombre.text + ", " + precio.text +" Descuento: " + descuento.text+ ", Amazon"))
+        else:
+            resultado.append((nombre.text + ", " + precio.text + ", Amazon"))
         j = j + 1
     print(resultado)
     navegador.close()
     return resultado
 
 def botonBuscar(marca, movil):
-    lista.delete(0,'end')
+    lista.delete(0, 'end')
     print(chk_pccom_state.get())
     print(chk_fnac_state.get())
     print(chk_amazon_state.get())
@@ -185,9 +216,9 @@ def convertir_resultados(fnac, pccom, amazon):
             resultado.append(i)
     if chk_amazon_state:
         for i in amazon:
+            print(i)
             resultado.append(i)
     lista.insert(0, *resultado)
-    print("resultado")
 
 
 window = Tk()

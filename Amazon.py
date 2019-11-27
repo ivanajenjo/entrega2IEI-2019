@@ -1,38 +1,55 @@
-from selenium import webdriver
-import time
 
-def buscarAmazon(movil):
+
+
+def buscarAmazon(marca, movil):
+    from selenium import webdriver
+    from selenium.webdriver.support.wait import WebDriverWait
+    from selenium.webdriver.common.by import By
+    import time
+    busqueda = marca + " " + movil
     navegador = webdriver.Chrome("driver/chromedriver.exe")
+    #navegador = webdriver.Firefox(executable_path=r'C:\Users\ivana\PycharmProjects\Entrega2IEI\driver\geckodriver.exe')
     navegador.maximize_window()
-    navegador.get("https://www.amazon.es/gp/browse.html?node=931491031&ref_=nav_em_T1_0_4_12_2__tele")
+    navegador.get("https://www.amazon.es/moviles-smartphones-libres/b/ref=amb_link_15?ie=UTF8&node=934197031&pf_rd_m=A1AT7YVPFBWXBL&pf_rd_s=merchandised-search-leftnav&pf_rd_r=AVW9X4MJY8SG5QSCZEE6&pf_rd_r=AVW9X4MJY8SG5QSCZEE6&pf_rd_t=101&pf_rd_p=cadc80ee-e6fb-44b6-91b9-706bc54ab022&pf_rd_p=cadc80ee-e6fb-44b6-91b9-706bc54ab022&pf_rd_i=931491031")
     elem = navegador.find_element_by_id("twotabsearchtextbox")
-    elem.send_keys(movil)
+    elem.send_keys(busqueda)
     elem.submit()
     time.sleep(5)
-    #WebDriverWait(navegador, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "celwidget slot=SEARCH_RESULTS template=SEARCH_RESULTS widgetId=search-results index=2")))
-    listaElementos = navegador.find_elements_by_xpath("//*[contains(@class, 'sg-col-20-of-24 s-result-item sg-col-0-of-12 sg-col-28-of-32 sg-col-16-of-20 sg-col sg-col-32-of-36 sg-col-12-of-16 sg-col-24-of-28')]")
-    print(len(listaElementos))
-    j = 3
+    listaMoviles = navegador.find_elements_by_xpath("//*[contains(@class, 's-result-item')]")
+    print("Número de lemento de la lista: " + str(len(listaMoviles)))
     resultado = list()
-    for i in listaElementos:
-        elementoActual = i
+    j = 1
+    for i in listaMoviles:
+        movilactual = i
+        waiting = WebDriverWait(navegador, 60)
+        continuar = False
         try:
-            nombre = elementoActual.find_element_by_xpath(
-                "/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["+str(j)+"]/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span")
-            print(nombre.text)
+            descuento = navegador.find_element(By.XPATH("/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["+str(j)+"]/div/span/div/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[2]/span[2]"))
+            try:
+                navegacion = navegador.find_element(By.XPATH("/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["+str(j)+"]/div/span/div/div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span"))
+                continuar = True
+                resultado.append(navegacion.text)
+            except:
+                print("Banner")
+            if continuar:
+                try:
+                    precio = navegador.find_element(By.XPATH("/html/body/div/div/div/div[2]/div/span[4]/div/div["+str(j)+"]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[2]/span[2]"))
+                    resultado.append(precio.text)
+                    resultado.append(descuento.text)
+                    resultado.append("AMAZON")
+                except:
+                    resultado.append(precio.text)
+                    resultado.append("-")
+                    resultado.append("AMAZON")
         except:
-            print("No se ha encontrado nombre")
-            break
-        #print(nombre.text)
-        try:
-            precio = elementoActual.find_element_by_xpath(
-                """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["""+str(j)+"""]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
-        except:
-            precio = elementoActual.find_element_by_xpath(
-                """/html/body/div[1]/div[1]/div[1]/div[2]/div/span[4]/div[1]/div["""+str(j)+"""]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]/div/div/a/span[1]/span[2]/span[1]""")
-        print(precio.text)
-        resultado.append((nombre.text + " " + precio.text + " Amazon"))
+            print("Precio no disponible")
         j = j + 1
+        try:
+            time.sleep(1)
+        except:
+            print("No sleep")
     print(resultado)
+    navegador.quit()
+    return resultado
 
-buscarAmazon("Xiaomi mi 9T")
+buscarAmazon("Apple", "iphone 11 pro")
